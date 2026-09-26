@@ -24,6 +24,29 @@ Given three near-simultaneous market quotes, can a beta=1 SABR model reproduce t
 4. Open `results/euraud_one_month_smile.png` and `results/quote_and_fit.json`.
 5. To run the checks: `py -m unittest discover -s tests -v`.
 
+## Track new quote dates in a separate script
+
+The one-day smile above remains a standalone example. To build a history, save each **new day's**
+TFS-ICAP FX option quote CSV inside `data/` and run:
+
+```powershell
+py track_daily_smiles.py
+```
+
+Open `results/euraud_daily_volatility.png` to see how the 25-delta put, ATM and
+25-delta call implied volatilities change **across quote dates**. The JSON file
+`results/euraud_daily_history.json` records the underlying figures and fitted
+SABR parameters for each date. If more than one CSV describes the same day,
+the script keeps the later synchronized set. Re-running updates the history.
+
+To refresh automatically when you save a CSV while your computer and terminal
+are running, use `py track_daily_smiles.py --watch`. Press **Ctrl+C** to stop.
+This checks the folder once a minute; it does **not** download quotes. With only
+the public sample, the chart has exactly one date, regardless of how often you
+run it. Obtain actual new daily option quotes to build a multi-day study. A
+study of weekend effects requires many dates and a specified expiry/calendar
+day-count method, and is not included here.
+
 ## What the script does
 
 1. Reads the vendor CSV and filters `EUR/AUD` and the one-month ATM, 25-delta RR and 25-delta BF records.
